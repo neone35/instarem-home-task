@@ -1,4 +1,4 @@
-# Skycop home task
+# Instarem home task
 
 [Demo on Heroku](https://instarem-task.herokuapp.com/)
 
@@ -8,7 +8,7 @@ Clone this repository
 
 ```bash
 git clone https://github.com/neone35/instarem-home-task.git
-cd skycop-home-task
+cd instarem-home-task
 ```
 
 Install deps and start project
@@ -21,8 +21,6 @@ yarn dev
 ## Task
 
 Use battle data to build an API Server using Node.JS/Express which exposes following 4 endpoints:
-
-Criteria:
 
 * /list returns list(array) of all the places where battle has taken place.
 * /count returns total number of battle occurred.

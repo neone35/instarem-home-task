@@ -1,34 +1,74 @@
 import withRedux from 'next-redux-wrapper';
-import Dropdown from 'react-dropdown';
 import React from 'react';
-import { initStore, fetchSkycopResponse } from '../server/store';
+import Link from 'next/link';
+import { initStore, fetchBattleLocationList, fetchBattleCount } from '../server/store';
 import '../static/style.css';
 
 class Index extends React.Component {
-  // static getInitialProps ({ store, isServer }) {
-  //   store.dispatch(fetchSkycopResponse(isServer))
-  //   return { isServer }
-  // }
   constructor(props) {
     super(props);
     this.state = {
-      selected: { value: null, label: null },
+      listClicked: false,
+      countClicked: false,
     };
-    this.handleSelect = this.handleSelect.bind(this);
+    this.handleListClick = this.handleListClick.bind(this);
+    this.handleCountClick = this.handleCountClick.bind(this);
   }
 
-  handleSelect(option) {
-    this.setState({
-      selected: option,
-    });
+  componentDidMount() {
+    this.props.fetchBattleLocationList();
+    this.props.fetchBattleCount();
+  }
+
+  handleListClick() {
+    this.setState({ countClicked: false });
+    this.setState({ listClicked: !this.state.listClicked });
+  }
+  handleCountClick() {
+    this.setState({ listClicked: false });
+    this.setState({ countClicked: !this.state.countClicked });
   }
 
   render() {
-    const { value } = this.state.selected;
-    // const defaultOption = payload[0].title;
+    const { listData, listRoute } = this.props.battleList;
+    const { countData, countRoute } = this.props.battleCount;
+    const { listClicked, countClicked } = this.state;
+    let output = null;
+    let route = null;
+    if (listClicked) {
+      output = JSON.stringify(listData);
+      route = listRoute;
+    } else if (countClicked) {
+      output = JSON.stringify(countData);
+      route = countRoute;
+    } else {
+      output = 'No data received';
+      route = '/';
+    }
     return (
-      <div className="formWrapper">
+      <div className="container">
         <h1>Hello game of thrones API task!</h1>
+        <div className="row">
+          <div className="list-group col-6">
+            <button
+              onClick={this.handleListClick}
+              className="btn btn-primary"
+            >Get Battle places
+            </button>
+            <button
+              onClick={this.handleCountClick}
+              className="btn btn-secondary"
+            >Get battles count
+            </button>
+          </div>
+          <div className="list-group col-6">
+            <p>
+              <span><b>Route:</b></span>
+              {route}
+            </p>
+            <span>{output}</span>
+          </div>
+        </div>
       </div>
     );
   }
@@ -36,8 +76,12 @@ class Index extends React.Component {
 
 function mapStateToProps(state) {
   return {
-    skycopRes: state.skycopReducer,
+    battleList: state.battleListReducer,
+    battleCount: state.battleCountReducer,
   };
 }
 
-export default withRedux(initStore, mapStateToProps, { fetchSkycopResponse })(Index);
+export default withRedux(initStore, mapStateToProps, {
+  fetchBattleLocationList,
+  fetchBattleCount,
+})(Index);
