@@ -71,7 +71,7 @@ class Index extends React.Component {
             <button
               onClick={this.handleListClick}
               className="btn btn-primary"
-            >Get Battle places
+            >Get battles places
             </button>
             <button
               onClick={this.handleCountClick}
