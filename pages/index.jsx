@@ -1,6 +1,7 @@
 import withRedux from 'next-redux-wrapper';
 import React from 'react';
 import Link from 'next/link';
+import Textarea from 'react-textarea-autosize';
 import { initStore, fetchBattleLocationList, fetchBattleCount } from '../server/store';
 import '../static/style.css';
 
@@ -46,8 +47,10 @@ class Index extends React.Component {
       route = '/';
     }
     return (
-      <div className="container">
-        <h1>Hello game of thrones API task!</h1>
+      <div className="jumbotron">
+        <h2 className="display-4">Game of thrones API task</h2>
+        <p className="lead">Using data to build an API Server using Node.JS/Express which exposes 4 endpoints.</p>
+        <hr className="my-4" />
         <div className="row">
           <div className="list-group col-6">
             <button
@@ -62,11 +65,8 @@ class Index extends React.Component {
             </button>
           </div>
           <div className="list-group col-6">
-            <p>
-              <span><b>Route:</b></span>
-              {route}
-            </p>
-            <span>{output}</span>
+            <p><b>{['Route: ', route].join('')}</b></p>
+            <Textarea name="textarea" value={output} />
           </div>
         </div>
       </div>
