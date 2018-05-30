@@ -1,0 +1,15 @@
+{
+    "extends": "airbnb",
+    "plugins": [
+        "compat"
+    ],
+    "rules": {
+        "compat/compat": "error",
+        "react/prop-types": "off",
+        "jsx-a11y/anchor-is-valid": "off"
+    },
+    "globals": {
+        "localStorage": true,
+        "fetch": true
+    }
+}
