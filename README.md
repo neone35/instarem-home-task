@@ -1,13 +1,13 @@
 # Skycop home task
 
-[Demo on Heroku](https://skycop-task.herokuapp.com/)
+[Demo on Heroku](https://instarem-task.herokuapp.com/)
 
 ## How to use
 
 Clone this repository
 
 ```bash
-git clone https://github.com/neone35/skycop-home-task.git
+git clone https://github.com/neone35/instarem-home-task.git
 cd skycop-home-task
 ```
 
@@ -20,14 +20,11 @@ yarn dev
 
 ## Task
 
-You have to create a simple React/React-Redux App that "fetches" a response into Redux state,
-displays a dropdown with the results, and upon changing a selection, it's value (not title)
-has to be displayed somewhere.
+Use battle data to build an API Server using Node.JS/Express which exposes following 4 endpoints:
 
 Criteria:
 
-* On button click the data is "fetched"
-* Dropdown has to be displayed from redux state
-* On change, the value has to be shown somewhere
-
-P.S. You can use default bootstrap styles if you wish.
+* /list returns list(array) of all the places where battle has taken place.
+* /count returns total number of battle occurred.
+* /stats returns most_active, outcome, battle_type and defender_size fields.
+* /search which returns atacker or defender with additional query options
