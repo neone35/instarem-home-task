@@ -8,11 +8,13 @@ const ROOT_URL = getRootUrl();
 const initialState = {
   battleListReducer: {},
   battleCountReducer: {},
+  battleStatsReducer: {},
 };
 
 export const actionTypes = {
   FETCH_LIST: 'fetch_list',
   FETCH_COUNT: 'fetch_count',
+  FETCH_STATS: 'fetch_stats',
 };
 
 const battleListReducer = (state = initialState.battleListReducer, action) => {
@@ -37,6 +39,17 @@ const battleCountReducer = (state = initialState.battleCountReducer, action) => 
       return state;
   }
 };
+const battleStatsReducer = (state = initialState.battleStatsReducer, action) => {
+  switch (action.type) {
+    case actionTypes.FETCH_STATS:
+      return Object.assign({}, state, {
+        statsData: action.payload,
+        statsRoute: action.route,
+      }) || false;
+    default:
+      return state;
+  }
+};
 
 // ACTIONS
 export const fetchBattleLocationList = () => async (dispatch) => {
@@ -49,10 +62,16 @@ export const fetchBattleCount = () => async (dispatch) => {
   const res = await axios.get(route);
   dispatch({ type: actionTypes.FETCH_COUNT, payload: res.data, route });
 };
+export const fetchBattleStats = () => async (dispatch) => {
+  const route = `${ROOT_URL}/api/stats`;
+  const res = await axios.get(route);
+  dispatch({ type: actionTypes.FETCH_STATS, payload: res.data, route });
+};
 
 const rootReducer = combineReducers({
   battleListReducer,
   battleCountReducer,
+  battleStatsReducer,
 });
 
 export const initStore = (newInitialState = initialState) =>

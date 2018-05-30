@@ -16,7 +16,8 @@ const dev = process.env.NODE_ENV !== 'production';
 const app = next({ dev });
 const handle = app.getRequestHandler();
 const ROOT_URL = getRootUrl();
-if (dev) require('dotenv').config(); // map .env file vars into process.env
+// map .env file vars into process.env
+if (dev) require('dotenv').config(); // eslint-disable-line
 const { MONGO_URL } = process.env;
 mongoose.connect(MONGO_URL);
 

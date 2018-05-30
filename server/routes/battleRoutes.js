@@ -4,7 +4,7 @@ const _ = require('lodash'); //eslint-disable-line
 
 function countInArray(array, what) {
   let count = 0;
-  for (let i = 0; i < array.length; i++) {
+  for (let i = 0; i < array.length; i += 1) {
     if (array[i] === what) {
       count += 1;
     }
