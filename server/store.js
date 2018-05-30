@@ -9,12 +9,14 @@ const initialState = {
   battleListReducer: {},
   battleCountReducer: {},
   battleStatsReducer: {},
+  battleSearchReducer: {},
 };
 
 export const actionTypes = {
   FETCH_LIST: 'fetch_list',
   FETCH_COUNT: 'fetch_count',
   FETCH_STATS: 'fetch_stats',
+  SEARCH_ACTION: 'search_action',
 };
 
 const battleListReducer = (state = initialState.battleListReducer, action) => {
@@ -50,6 +52,17 @@ const battleStatsReducer = (state = initialState.battleStatsReducer, action) => 
       return state;
   }
 };
+const battleSearchReducer = (state = initialState.battleStatsReducer, action) => {
+  switch (action.type) {
+    case actionTypes.SEARCH_ACTION:
+      return Object.assign({}, state, {
+        searchData: action.payload,
+        searchRoute: action.route,
+      }) || false;
+    default:
+      return state;
+  }
+};
 
 // ACTIONS
 export const fetchBattleLocationList = () => async (dispatch) => {
@@ -67,11 +80,17 @@ export const fetchBattleStats = () => async (dispatch) => {
   const res = await axios.get(route);
   dispatch({ type: actionTypes.FETCH_STATS, payload: res.data, route });
 };
+export const submitSearch = values => async (dispatch) => {
+  const route = `${ROOT_URL}/api/search`;
+  const res = await axios.post(route, values);
+  dispatch({ type: actionTypes.SEARCH_ACTION, payload: res.data, route });
+};
 
 const rootReducer = combineReducers({
   battleListReducer,
   battleCountReducer,
   battleStatsReducer,
+  battleSearchReducer,
 });
 
 export const initStore = (newInitialState = initialState) =>

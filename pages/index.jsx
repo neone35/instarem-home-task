@@ -6,8 +6,10 @@ import {
   fetchBattleLocationList,
   fetchBattleCount,
   fetchBattleStats,
+  submitSearch,
 } from '../server/store';
 import '../static/style.css';
+import { Link } from '../server/routes';
 
 class Index extends React.Component {
   constructor(props) {
@@ -29,23 +31,71 @@ class Index extends React.Component {
   }
 
   handleListClick() {
-    this.setState({ countClicked: false, statsClicked: false });
+    this.setState({
+      countClicked: false,
+      statsClicked: false,
+    });
     this.setState({ listClicked: !this.state.listClicked });
   }
   handleCountClick() {
-    this.setState({ listClicked: false, statsClicked: false });
+    this.setState({
+      listClicked: false,
+      statsClicked: false,
+    });
     this.setState({ countClicked: !this.state.countClicked });
   }
   handleStatsClick() {
-    this.setState({ listClicked: false, countClicked: false });
+    this.setState({
+      listClicked: false,
+      countClicked: false,
+    });
     this.setState({ statsClicked: !this.state.statsClicked });
+  }
+
+  renderPlacesBtn() {
+    // console.log(submitSet);
+    const placesBtn = (
+      <button
+        onClick={this.handleListClick}
+        className="btn btn-primary"
+      >Get battles places
+      </button>
+    );
+    return placesBtn;
+  }
+
+  renderCountBtn() {
+    // console.log(submitSet);
+    const countBtn = (
+      <button
+        onClick={this.handleCountClick}
+        className="btn btn-info"
+      >Get battles count
+      </button>
+    );
+    return countBtn;
+  }
+
+  renderStatsBtn() {
+    // console.log(submitSet);
+    const statsBtn = (
+      <button
+        onClick={this.handleStatsClick}
+        className="btn btn-success"
+      >Get battles stats
+      </button>
+    );
+    return statsBtn;
   }
 
   render() {
     const { listData, listRoute } = this.props.battleList;
     const { countData, countRoute } = this.props.battleCount;
     const { statsData, statsRoute } = this.props.battleStats;
-    const { listClicked, countClicked, statsClicked } = this.state;
+    const { searchData, searchRoute } = this.props.battleSearch;
+    const {
+      listClicked, countClicked, statsClicked, searchClicked,
+    } = this.state;
     let output = null;
     let route = null;
     if (listClicked) {
@@ -57,6 +107,9 @@ class Index extends React.Component {
     } else if (statsClicked) {
       output = JSON.stringify(statsData, null, 2);
       route = statsRoute;
+    } else if (searchClicked) {
+      output = JSON.stringify(searchData, null, 2);
+      route = searchRoute;
     } else {
       output = 'No data received';
       route = '/';
@@ -68,21 +121,19 @@ class Index extends React.Component {
         <hr className="my-4" />
         <div className="row">
           <div className="list-group col-6">
-            <button
-              onClick={this.handleListClick}
-              className="btn btn-primary"
-            >Get battles places
-            </button>
-            <button
-              onClick={this.handleCountClick}
-              className="btn btn-secondary"
-            >Get battles count
-            </button>
-            <button
-              onClick={this.handleStatsClick}
-              className="btn btn-success"
-            >Get battles stats
-            </button>
+            {this.renderPlacesBtn()}
+            {this.renderCountBtn()}
+            {this.renderStatsBtn()}
+            <Link
+              route="search"
+              params={{ king: 'Robb Stark', location: 'Green Fork', type: 'pitched battle' }}
+            >
+              <button
+                className="btn btn-dark"
+                onClick={() => this.props.submitSearch(this.props.url.query)}
+              >Search
+              </button>
+            </Link>
           </div>
           <div className="list-group col-6">
             <p><span><b>Route: </b></span>{route}</p>
@@ -99,6 +150,7 @@ function mapStateToProps(state) {
     battleList: state.battleListReducer,
     battleCount: state.battleCountReducer,
     battleStats: state.battleStatsReducer,
+    battleSearch: state.battleSearchReducer,
   };
 }
 
@@ -106,4 +158,5 @@ export default withRedux(initStore, mapStateToProps, {
   fetchBattleLocationList,
   fetchBattleCount,
   fetchBattleStats,
+  submitSearch,
 })(Index);

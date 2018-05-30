@@ -4,6 +4,7 @@ require('babel-register');
 // routes
 const getRootUrl = require('../lib/getRootUrl').default;
 const battleRoutes = require('./routes/battleRoutes').default;
+const routes = require('./routes');
 // server dependencies
 const express = require('express');
 const next = require('next');
@@ -14,7 +15,7 @@ const mongoose = require('mongoose');
 const port = process.env.PORT || 4000;
 const dev = process.env.NODE_ENV !== 'production';
 const app = next({ dev });
-const handle = app.getRequestHandler();
+const handler = routes.getRequestHandler(app);
 const ROOT_URL = getRootUrl();
 // map .env file vars into process.env
 if (dev) require('dotenv').config(); // eslint-disable-line
@@ -28,9 +29,8 @@ app.prepare()
     server.use(bodyParser.json());
 
     battleRoutes(server);
-    server.get('*', (req, res) => handle(req, res));
 
-    server.listen(port, (err) => {
+    server.use(handler).listen(port, (err) => {
       if (err) throw err; // eslint-disable-next-line no-console
       console.log(`> Ready on ${ROOT_URL}`);
     });

@@ -81,11 +81,22 @@ export default function battleRoutes(server) {
       },
     });
 
+
     if (jsonRes != null) {
       res.send(jsonRes);
     } else {
       res.send(404);
     }
+  });
+
+  server.post('/api/search', async (req, res) => {
+    const { king, location, type } = req.body;
+    const searchResult = await Battle.find({
+      attacker_king: king,
+      location,
+      battle_type: type,
+    }).select('attacker_king defender_king location battle_type');
+    res.send(searchResult);
   });
 }
 
