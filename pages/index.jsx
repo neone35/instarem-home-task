@@ -15,9 +15,8 @@ class Index extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      listClicked: false,
-      countClicked: false,
-      statsClicked: false,
+      output: 'No data received',
+      route: '/',
     };
     this.handleListClick = this.handleListClick.bind(this);
     this.handleCountClick = this.handleCountClick.bind(this);
@@ -31,29 +30,28 @@ class Index extends React.Component {
   }
 
   handleListClick() {
+    const { listData, listRoute } = this.props.battleList;
     this.setState({
-      countClicked: false,
-      statsClicked: false,
+      output: JSON.stringify(listData, null, 2),
+      route: listRoute,
     });
-    this.setState({ listClicked: !this.state.listClicked });
   }
   handleCountClick() {
+    const { countData, countRoute } = this.props.battleCount;
     this.setState({
-      listClicked: false,
-      statsClicked: false,
+      output: JSON.stringify(countData, null, 2),
+      route: countRoute,
     });
-    this.setState({ countClicked: !this.state.countClicked });
   }
   handleStatsClick() {
+    const { statsData, statsRoute } = this.props.battleStats;
     this.setState({
-      listClicked: false,
-      countClicked: false,
+      output: JSON.stringify(statsData, null, 2),
+      route: statsRoute,
     });
-    this.setState({ statsClicked: !this.state.statsClicked });
   }
 
   renderPlacesBtn() {
-    // console.log(submitSet);
     const placesBtn = (
       <button
         onClick={this.handleListClick}
@@ -65,7 +63,6 @@ class Index extends React.Component {
   }
 
   renderCountBtn() {
-    // console.log(submitSet);
     const countBtn = (
       <button
         onClick={this.handleCountClick}
@@ -77,7 +74,6 @@ class Index extends React.Component {
   }
 
   renderStatsBtn() {
-    // console.log(submitSet);
     const statsBtn = (
       <button
         onClick={this.handleStatsClick}
@@ -88,32 +84,23 @@ class Index extends React.Component {
     return statsBtn;
   }
 
+  renderSearchBtn() {
+    const searchBtn = (
+      <Link
+        route="search"
+        params={{ king: 'Robb Stark', location: 'Green Fork', type: 'pitched battle' }}
+      >
+        <button
+          className="btn btn-dark"
+          onClick={() => this.props.submitSearch(this.props.url.query)}
+        >Search
+        </button>
+      </Link>
+    );
+    return searchBtn;
+  }
+
   render() {
-    const { listData, listRoute } = this.props.battleList;
-    const { countData, countRoute } = this.props.battleCount;
-    const { statsData, statsRoute } = this.props.battleStats;
-    const { searchData, searchRoute } = this.props.battleSearch;
-    const {
-      listClicked, countClicked, statsClicked, searchClicked,
-    } = this.state;
-    let output = null;
-    let route = null;
-    if (listClicked) {
-      output = JSON.stringify(listData, null, 2);
-      route = listRoute;
-    } else if (countClicked) {
-      output = JSON.stringify(countData, null, 2);
-      route = countRoute;
-    } else if (statsClicked) {
-      output = JSON.stringify(statsData, null, 2);
-      route = statsRoute;
-    } else if (searchClicked) {
-      output = JSON.stringify(searchData, null, 2);
-      route = searchRoute;
-    } else {
-      output = 'No data received';
-      route = '/';
-    }
     return (
       <div className="jumbotron">
         <h3>Game of thrones <span className="badge badge-secondary">API task</span></h3>
@@ -124,20 +111,11 @@ class Index extends React.Component {
             {this.renderPlacesBtn()}
             {this.renderCountBtn()}
             {this.renderStatsBtn()}
-            <Link
-              route="search"
-              params={{ king: 'Robb Stark', location: 'Green Fork', type: 'pitched battle' }}
-            >
-              <button
-                className="btn btn-dark"
-                onClick={() => this.props.submitSearch(this.props.url.query)}
-              >Search
-              </button>
-            </Link>
+            {this.renderSearchBtn()}
           </div>
           <div className="list-group col-6">
-            <p><span><b>Route: </b></span>{route}</p>
-            <Textarea name="textarea" value={output} />
+            <p><span><b>Route: </b></span>{this.state.route}</p>
+            <Textarea name="textarea" value={this.state.output} />
           </div>
         </div>
       </div>
