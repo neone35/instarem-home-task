@@ -89,10 +89,10 @@ export default function battleRoutes(server) {
     }
   });
 
-  server.post('/api/search', async (req, res) => {
-    const { king, location, type } = req.body;
+  server.get('/api/search', async (req, res) => {
+    const { king, location, type } = req.query;
     const searchResult = await Battle.find({
-      attacker_king: king,
+      $or: [{ attacker_king: king }, { defender_king: king }],
       location,
       battle_type: type,
     }).select('attacker_king defender_king location battle_type');

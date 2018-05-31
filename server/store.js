@@ -1,4 +1,5 @@
 import axios from 'axios';
+import url from 'url';
 import { createStore, applyMiddleware, compose, combineReducers } from 'redux';
 import thunkMiddleware from 'redux-thunk';
 import getRootUrl from '../lib/getRootUrl';
@@ -80,9 +81,11 @@ export const fetchBattleStats = () => async (dispatch) => {
   const res = await axios.get(route);
   dispatch({ type: actionTypes.FETCH_STATS, payload: res.data, route });
 };
-export const submitSearch = values => async (dispatch) => {
+export const submitSearch = requrl => async (dispatch) => {
   const route = `${ROOT_URL}/api/search`;
-  const res = await axios.post(route, values);
+  const searchTag = url.parse(requrl, true).search; // true - parse query string
+  const fullUrl = url.resolve(route, searchTag);
+  const res = await axios.get(fullUrl);
   dispatch({ type: actionTypes.SEARCH_ACTION, payload: res.data, route });
 };
 

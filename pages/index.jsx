@@ -9,7 +9,7 @@ import {
   submitSearch,
 } from '../server/store';
 import '../static/style.css';
-import { Link } from '../server/routes';
+import { Router } from '../server/routes';
 
 class Index extends React.Component {
   constructor(props) {
@@ -21,6 +21,7 @@ class Index extends React.Component {
     this.handleListClick = this.handleListClick.bind(this);
     this.handleCountClick = this.handleCountClick.bind(this);
     this.handleStatsClick = this.handleStatsClick.bind(this);
+    this.handleSearchClick = this.handleSearchClick.bind(this);
   }
 
   componentDidMount() {
@@ -29,7 +30,27 @@ class Index extends React.Component {
     this.props.fetchBattleStats();
   }
 
+  runSearch(times) {
+    let counter = 0;
+    for (let i = 0; i < times; i += 1) {
+      if (counter < times) {
+        // eslint-disable-next-line
+        setTimeout(() => {
+          this.props.submitSearch(this.props.url.asPath);
+          const { searchData, searchRoute } = this.props.battleSearch;
+          this.setState({
+            output: JSON.stringify(searchData, null, 2),
+            route: searchRoute,
+          });
+          this.runSearch(counter);
+          counter += 1;
+        }, 500);
+      }
+    }
+  }
+
   handleListClick() {
+    Router.pushRoute('index');
     const { listData, listRoute } = this.props.battleList;
     this.setState({
       output: JSON.stringify(listData, null, 2),
@@ -37,6 +58,7 @@ class Index extends React.Component {
     });
   }
   handleCountClick() {
+    Router.pushRoute('index');
     const { countData, countRoute } = this.props.battleCount;
     this.setState({
       output: JSON.stringify(countData, null, 2),
@@ -44,11 +66,24 @@ class Index extends React.Component {
     });
   }
   handleStatsClick() {
+    Router.pushRoute('index');
     const { statsData, statsRoute } = this.props.battleStats;
     this.setState({
       output: JSON.stringify(statsData, null, 2),
       route: statsRoute,
     });
+  }
+  handleSearchClick() {
+    Router.pushRoute('search', {
+      king: 'Robb Stark',
+      location: 'Riverrun',
+      type: 'siege',
+    });
+    // run 3 times to:
+    // set url params
+    // send async req to back
+    // set state
+    this.runSearch(3);
   }
 
   renderPlacesBtn() {
@@ -86,16 +121,11 @@ class Index extends React.Component {
 
   renderSearchBtn() {
     const searchBtn = (
-      <Link
-        route="search"
-        params={{ king: 'Robb Stark', location: 'Green Fork', type: 'pitched battle' }}
-      >
-        <button
-          className="btn btn-dark"
-          onClick={() => this.props.submitSearch(this.props.url.query)}
-        >Search
-        </button>
-      </Link>
+      <button
+        className="btn btn-dark"
+        onClick={this.handleSearchClick}
+      >Search
+      </button>
     );
     return searchBtn;
   }
